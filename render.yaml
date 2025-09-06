@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: kaiken-web
+    env: python
+    plan: free
+    repo: '{REPO}'
+    branch: main
+    buildCommand: 'pip install -r requirements.txt && python manage.py collectstatic --noinput'
+    startCommand: 'gunicorn kaiken.wsgi --bind 0.0.0.0:$PORT'
+    envVars:
+      - key: SECRET_KEY
+        fromDatabase: null
+
+databases:
+  - name: kaiken-db
+    plan: free
+
+
