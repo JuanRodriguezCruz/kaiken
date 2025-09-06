@@ -1,0 +1,135 @@
+{% load static %}
+{% load humanize %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crear Licitación</title>
+    <link rel="stylesheet" href="{% static 'licitaciones/styles.css' %}">
+  </head>
+  <body>
+    <main class="container">
+      <div class="card">
+      <p><a class="btn link" href="{% url 'tender_list_html' %}" title="Volver al listado">
+        <!-- left arrow -->
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span style="font-size:0.95rem;margin-left:6px">Volver</span>
+      </a></p>
+      <h1>Crear licitación</h1>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {# Etiquetas traducidas provistas por los labels en los forms.py #}
+
+        <h2>Órdenes</h2>
+        {{ formset.management_form }}
+        <div class="form-table-wrapper">
+        <table class="datatable">
+          <thead>
+            <tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Coste</th></tr>
+          </thead>
+          <tbody id="orders-body">
+            {% for f in formset %}
+            <tr>
+              <td>{{ f.product }}</td>
+              <td>{{ f.quantity }}</td>
+              <td>{{ f.unit_price }}</td>
+              <td>{{ f.unit_cost }}</td>
+              <td>
+                <span style="display:none">{{ f.DELETE }}</span>
+                <button type="button" class="delete-order" title="Eliminar">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                    <path d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Eliminar</span>
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        </div>
+
+        <div class="form-actions">
+        <button type="button" id="add-order" class="btn" title="Agregar orden">
+          <!-- plus svg -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span style="margin-left:8px">Agregar orden</span>
+        </button>
+        </button>
+        <button type="submit" class="btn secondary">Crear</button>
+        </div>
+
+        {# Plantilla para nuevas filas (oculta) #}
+        <table style="display:none">
+          <tbody>
+            <tr id="empty-form">
+              <td>{{ formset.empty_form.product }}</td>
+              <td>{{ formset.empty_form.quantity }}</td>
+              <td>${{ formset.empty_form.unit_price }}</td>
+              <td>${{ formset.empty_form.unit_cost }}</td>
+              <td>
+                <span style="display:none">{{ formset.empty_form.DELETE }}</span>
+                <button type="button" class="delete-order" title="Eliminar" style="background:transparent;border:none;color:#ef4444;display:inline-flex;align-items:center;gap:6px">
+                  <!-- trash svg -->
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                    <path d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Eliminar</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <script>
+        (function(){
+          var addBtn = document.getElementById('add-order');
+          var tbody = document.getElementById('orders-body');
+          function attachDelete(btn){
+            btn.addEventListener('click', function(){
+              var tr = btn.closest('tr');
+              if(!tr) return;
+              // Marcar checkbox DELETE si existe, sino remover la fila
+              var delInput = tr.querySelector('input[type="checkbox"][name$="-DELETE"]');
+              if(delInput){
+                delInput.checked = true;
+                tr.style.display = 'none';
+              } else {
+                tr.remove();
+                // actualizar TOTAL_FORMS
+                var totalForms = document.querySelector('input[name$="TOTAL_FORMS"]');
+                totalForms && (totalForms.value = parseInt(totalForms.value, 10) - 1);
+              }
+            });
+          }
+
+          // Attach delete to existing buttons
+          document.querySelectorAll('.delete-order').forEach(attachDelete);
+
+          addBtn && addBtn.addEventListener('click', function(){
+            var totalForms = document.querySelector('input[name$="TOTAL_FORMS"]');
+            var idx = parseInt(totalForms.value, 10);
+            var empty = document.getElementById('empty-form').innerHTML;
+            var rowHtml = empty.replace(/__prefix__/g, idx);
+            var tr = document.createElement('tr');
+            tr.innerHTML = rowHtml;
+            tbody.appendChild(tr);
+            totalForms.value = idx + 1;
+            // Attach delete for the new button
+            attachDelete(tr.querySelector('.delete-order'));
+          });
+        })();
+        </script>
+      </form>
+      </div>
+    </main>
+  </body>
+</html>
+
+

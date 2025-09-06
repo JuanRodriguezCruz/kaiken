@@ -1,0 +1,62 @@
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --accent:#2b6cb0; /* azul sobrio */
+  --accent-2:#0ea5a4; /* verde agua */
+  --accent-3:#8b5cf6; /* lila tenue */
+  --border:#e6eaf0;
+  --success:#10b981;
+}
+
+body{
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+  background:linear-gradient(180deg, var(--bg), #eef2f6);
+  color:#0f172a;
+  margin:0;
+  padding:2rem;
+}
+
+.container{ max-width:1100px; margin:0 auto; }
+
+.card{ background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; box-shadow:0 6px 18px rgba(15,23,42,0.06); }
+
+h1{ font-size:1.6rem; margin-bottom:0.25rem; color:#0b1220 }
+
+.btn{ display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:white; padding:0.45rem 0.85rem; border-radius:8px; text-decoration:none; font-weight:600; min-height:38px }
+.btn.secondary{ display:inline-flex; align-items:center; gap:8px; background:#eef2f6; color:#0b1220; border:1px solid #dbe7f5; min-height:38px }
+
+.delete-order{ background:transparent; border:none; color:#ef4444; display:inline-flex; align-items:center; gap:6px; cursor:pointer }
+.delete-order svg{ display:block }
+
+/* Form actions layout */
+.form-actions{ display:flex; gap:12px; align-items:center; margin-top:12px }
+.form-table-wrapper{ padding-bottom:8px }
+.btn svg{ display:block; vertical-align:middle }
+
+/* Variant: link-style button (no background, compact) */
+.btn.link{ background:transparent; border:none; padding:0.15rem 0.4rem; color:var(--muted); min-height:0 }
+.btn.link svg{ opacity:0.9 }
+
+table.datatable{ width:100%; border-collapse:collapse; margin-top:1rem; border-radius:6px; overflow:hidden }
+table.datatable th, table.datatable td{ padding:0.75rem 1rem; border-bottom:1px solid var(--border); text-align:left }
+table.datatable thead th{ background:linear-gradient(180deg,#fbfdff,#f6fbff); font-weight:700; color:#0b1220 }
+table.datatable tbody tr:hover{ background:#fbfdff }
+
+.muted{ color:var(--muted) }
+.pill{ display:inline-block; padding:0.15rem 0.5rem; background:#f1f5f9; border-radius:999px; font-size:0.85rem }
+
+.pagination{ margin-top:1rem }
+.pagination a{ margin-right:0.5rem }
+
+/* Small helpers for form */
+form input, form select { padding:0.45rem; border-radius:6px; border:1px solid var(--border); }
+
+/* Evitar overflow horizontal en formularios con muchos campos */
+.form-table-wrapper{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+table.datatable td input, table.datatable td select, table.datatable td .django-select { max-width:220px; width:100%; box-sizing:border-box; }
+@media (max-width:640px){
+  table.datatable th, table.datatable td{ padding:0.5rem 0.6rem }
+  table.datatable td input, table.datatable td select { max-width:140px }
+}
+

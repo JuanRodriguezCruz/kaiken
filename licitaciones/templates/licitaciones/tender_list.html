@@ -1,0 +1,56 @@
+{% load static %}
+{% load humanize %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Licitaciones</title>
+    <link rel="stylesheet" href="{% static 'licitaciones/styles.css' %}">
+  </head>
+  <body>
+    <main class="container">
+      <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h1>Licitaciones</h1>
+        <a class="btn" href="{% url 'tender_create' %}">Crear licitación</a>
+      </div>
+      <table class="datatable">
+        <thead>
+          <tr>
+            <th>Identificador</th>
+            <th>Cliente</th>
+            <th>Fecha adjudicación</th>
+            <th>Margen total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in tenders %}
+          <tr>
+            <td><a href="{% url 'tender_detail_html' t.identifier %}">{{ t.identifier }}</a></td>
+            <td>{{ t.client }}</td>
+            <td>{{ t.awarded_date }}</td>
+            <td>${{ t.total_margin|floatformat:2|intcomma }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4">No hay licitaciones.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="pagination">
+        {% if tenders.has_previous %}
+          <a href="?page={{ tenders.previous_page_number }}">« anterior</a>
+        {% endif %}
+
+        <span> Página {{ tenders.number }} de {{ tenders.paginator.num_pages }} </span>
+
+        {% if tenders.has_next %}
+          <a href="?page={{ tenders.next_page_number }}">siguiente »</a>
+        {% endif %}
+      </div>
+    </main>
+  </body>
+</html>
+
+

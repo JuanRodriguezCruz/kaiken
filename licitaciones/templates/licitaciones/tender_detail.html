@@ -1,0 +1,59 @@
+{% load static %}
+{% load humanize %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Licitación {{ tender.identifier }}</title>
+    <link rel="stylesheet" href="{% static 'licitaciones/styles.css' %}">
+  </head>
+  <body>
+    <main class="container">
+      <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <a href="{% url 'tender_list_html' %}">← Volver a lista</a>
+          <h1>Licitación {{ tender.identifier }}</h1>
+        </div>
+        <a class="btn" href="{% url 'tender_create' %}">Crear licitación</a>
+      </div>
+      <p class="muted"><strong>Cliente:</strong> {{ tender.client }}</p>
+      <p class="muted"><strong>Fecha adjudicación:</strong> {{ tender.awarded_date }}</p>
+      <p class="muted"><strong>Margen total:</strong> ${{ tender.total_margin|floatformat:2 }}</p>
+
+      <h2>Productos adjudicados</h2>
+      <table class="datatable">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio unitario</th>
+            <th>Coste unitario</th>
+            <th>Margen</th>
+            <th>Margen %</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for o in orders %}
+          <tr>
+            <td>{{ o.product.sku }}</td>
+            <td>{{ o.product.name }}</td>
+            <td>{{ o.quantity }}</td>
+            <td>${{ o.unit_price|floatformat:2|intcomma }}</td>
+            <td>${{ o.unit_cost|floatformat:2|intcomma }}</td>
+            <td>${{ o.margin|floatformat:2|intcomma }}</td>
+            <td>{{ o.margin_percentage }}%</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6">No hay productos adjudicados.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </main>
+  </body>
+</html>
+
+
