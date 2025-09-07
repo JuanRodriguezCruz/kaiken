@@ -10,4 +10,8 @@ Instrucciones rápidas:
 - Cargar datos de ejemplo: `python manage.py import_sample_data`
 - Ejecutar servidor: `python manage.py runserver`
 
+Trabajo a futuro:
+- Hacer la plataforma responsive para correcta visualizacion en dispositivos moviles
+- Habilitar la gestion de proveedores
+
 
