@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ValidationError
 
-from licitaciones.models import Tender, Product, Order
+from licitaciones.models import Tender, Product, Order, Client
 
 
 TENDER_URL = getattr(settings, 'SAMPLE_TENDER_URL', 'https://kaiken.up.railway.app/webhook/tender-sample')
@@ -56,15 +56,21 @@ class Command(BaseCommand):
         tenders = fetch_json(TENDER_URL)
         for t in tenders:
             identifier = t.get('id') or t.get('identifier')
-            client = t.get('client', '')
+            client_name = t.get('client', '')
             # Mapeamos `creation_date` al campo `awarded_date` del modelo
             awarded_date = t.get('creation_date') or t.get('awarded_date')
 
             try:
+                # Crear o obtener cliente en la tabla Client
+                client_obj = None
+                if client_name:
+                    client_obj, _ = Client.objects.get_or_create(name=client_name)
+
                 # Si existe, actualizar y validar mediante save()
                 existing = Tender.objects.filter(identifier=identifier).first()
                 if existing:
-                    existing.client = client
+                    existing.client = client_name
+                    existing.client_obj = client_obj
                     existing.awarded_date = awarded_date
                     try:
                         existing.save()
@@ -72,12 +78,13 @@ class Command(BaseCommand):
                         self.stderr.write(f'Error validando licitación {identifier}: {ve}')
                         continue
                 else:
-                    tender = Tender(identifier=identifier, client=client, awarded_date=awarded_date)
                     # Sólo crear la tender si existen órdenes asociadas
                     normalized = str(identifier or '').replace('-', '')
                     if normalized not in tender_to_orders:
                         self.stderr.write(f'Omitiendo licitación sin órdenes: {identifier}')
                         continue
+
+                    tender = Tender(identifier=identifier, client_obj=client_obj, awarded_date=awarded_date)
                     try:
                         tender.save()
                     except ValidationError as ve:

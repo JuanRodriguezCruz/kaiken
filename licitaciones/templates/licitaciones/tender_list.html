@@ -9,11 +9,66 @@
     <link rel="stylesheet" href="{% static 'licitaciones/styles.css' %}">
   </head>
   <body>
+    {% include 'licitaciones/navbar.html' %}
     <main class="container">
       <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h1>Licitaciones</h1>
-        <a class="btn" href="{% url 'tender_create' %}">Crear licitación</a>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-direction:column">
+        <div style="width:100%;display:flex;justify-content:space-between;align-items:center">
+          <h1 style="margin:0">Licitaciones</h1>
+          <a class="btn" href="{% url 'tender_create' %}">Crear licitación</a>
+        </div>
+        <div style="width:100%;display:flex;justify-content:center;margin-top:12px">
+          <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+            <button id="toggle-search-filters" type="button" class="btn secondary" aria-expanded="false">Mostrar filtros</button>
+
+            <!-- buscador simple (visible por defecto) -->
+            <form id="search-form" method="get" action="" style="margin:12px 0;display:flex;gap:8px;align-items:center;">
+              <input type="search" name="q" placeholder="Buscar por id o cliente" value="{{ q|default_if_none:'' }}" style="padding:8px;border-radius:6px;border:1px solid #e6eaf0;min-width:320px" />
+              <button type="submit" class="btn secondary" style="padding:8px 10px">Buscar</button>
+            </form>
+
+            <!-- filtros (oculto inicialmente) -->
+            <form id="filters-form" method="get" action="" style="display:none;margin:12px 0;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center">
+              <input type="hidden" name="q" value="{{ q|default_if_none:'' }}" />
+              <input type="hidden" name="client" placeholder="Cliente" value="{{ request.GET.client|default_if_none:'' }}" style="padding:8px;border-radius:6px;border:1px solid #e6eaf0;min-width:180px" />
+              <div style="display:flex;align-items:center;gap:6px;font-size:0.9rem">
+                <label for="start_date" style="margin:0;">Desde</label>
+                <input id="start_date" type="date" name="start_date" value="{{ request.GET.start_date|default_if_none:'' }}" style="padding:6px;border-radius:6px;border:1px solid #e6eaf0" />
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:0.9rem">
+                <label for="end_date" style="margin:0;">Hasta</label>
+                <input id="end_date" type="date" name="end_date" value="{{ request.GET.end_date|default_if_none:'' }}" style="padding:6px;border-radius:6px;border:1px solid #e6eaf0" />
+              </div>
+              <input type="number" step="0.01" name="min_margin" placeholder="Margen min" value="{{ request.GET.min_margin|default_if_none:'' }}" style="padding:8px;border-radius:6px;border:1px solid #e6eaf0;width:120px" />
+              <input type="number" step="0.01" name="max_margin" placeholder="Margen max" value="{{ request.GET.max_margin|default_if_none:'' }}" style="padding:8px;border-radius:6px;border:1px solid #e6eaf0;width:120px" />
+              <button type="submit" class="btn secondary" style="padding:8px 10px">Aplicar filtros</button>
+            </form>
+          </div>
+        </div>
+
+        <script>
+          (function(){
+            var toggle = document.getElementById('toggle-search-filters');
+            var searchForm = document.getElementById('search-form');
+            var filtersForm = document.getElementById('filters-form');
+            toggle && toggle.addEventListener('click', function(){
+              var showingFilters = filtersForm.style.display !== 'none';
+              if(showingFilters){
+                // hide filters, show search
+                filtersForm.style.display = 'none';
+                searchForm.style.display = 'flex';
+                toggle.innerText = 'Mostrar filtros';
+                toggle.setAttribute('aria-expanded','false');
+              } else {
+                // show filters, hide search
+                filtersForm.style.display = 'flex';
+                searchForm.style.display = 'none';
+                toggle.innerText = 'Mostrar buscador';
+                toggle.setAttribute('aria-expanded','true');
+              }
+            });
+          })();
+        </script>
       </div>
       <table class="datatable">
         <thead>
@@ -28,8 +83,8 @@
           {% for t in tenders %}
           <tr>
             <td><a href="{% url 'tender_detail_html' t.identifier %}">{{ t.identifier }}</a></td>
-            <td>{{ t.client }}</td>
-            <td>{{ t.awarded_date }}</td>
+            <td>{{ t.client_obj.name }}</td>
+            <td>{{ t.awarded_date|date:"d M Y" }}</td>
             <td>${{ t.total_margin|floatformat:2|intcomma }}</td>
           </tr>
           {% empty %}

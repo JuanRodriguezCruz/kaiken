@@ -1,0 +1,48 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clientes</title>
+    <link rel="stylesheet" href="{% static 'licitaciones/styles.css' %}">
+  </head>
+  <body>
+    {% include 'licitaciones/navbar.html' %}
+    <main class="container">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-direction:column;gap:8px">
+          <div style="width:100%;display:flex;justify-content:space-between;align-items:center">
+            <h1>Clientes</h1>
+            <div style="display:flex;gap:8px">
+              <a class="btn" href="{% url 'client_create' %}">Crear cliente</a>
+            </div>
+          </div>
+
+          <form method="get" action="" style="margin:0;display:flex;gap:8px;align-items:center">
+            <input type="search" name="q" placeholder="Buscar cliente" value="{{ q|default_if_none:'' }}" style="padding:8px;border-radius:6px;border:1px solid #e6eaf0;min-width:320px" />
+            <button type="submit" class="btn secondary" style="padding:8px 10px">Buscar</button>
+          </form>
+
+        <table class="datatable">
+          <thead>
+            <tr><th>Nombre</th><th>Creado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            {% for c in clients %}
+            <tr>
+              <td>{{ c.name }}</td>
+              <td>{{ c.created_at|date:"d M Y" }}</td>
+              <td><a href="{% url 'client_detail' c.pk %}">Ver</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No hay clientes.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>
+
+

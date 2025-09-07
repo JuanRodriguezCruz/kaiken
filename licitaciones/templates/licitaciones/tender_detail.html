@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'licitaciones/styles.css' %}">
   </head>
   <body>
+    {% include 'licitaciones/navbar.html' %}
     <main class="container">
       <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center">
@@ -18,9 +19,9 @@
         </div>
         <a class="btn" href="{% url 'tender_create' %}">Crear licitación</a>
       </div>
-      <p class="muted"><strong>Cliente:</strong> {{ tender.client }}</p>
-      <p class="muted"><strong>Fecha adjudicación:</strong> {{ tender.awarded_date }}</p>
-      <p class="muted"><strong>Margen total:</strong> ${{ tender.total_margin|floatformat:2 }}</p>
+      <p class="muted"><strong>Cliente:</strong> {{ tender.client_obj.name }}</p>
+      <p class="muted"><strong>Fecha adjudicación:</strong> {{ tender.awarded_date|date:"d M Y" }}</p>
+      <p class="muted"><strong>Margen total:</strong> ${{ tender.total_margin|floatformat:2|intcomma }}</p>
 
       <h2>Productos adjudicados</h2>
       <table class="datatable">

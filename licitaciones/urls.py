@@ -8,6 +8,9 @@ urlpatterns = [
     # Rutas públicas para vistas HTML
     path('tenders/', views.tender_list, name='tender_list_html'),
     path('tenders/new/', views.tender_create, name='tender_create'),
+    path('clients/', views.client_list, name='client_list'),
+    path('clients/new/', views.client_create, name='client_create'),
+    path('clients/<int:pk>/', views.client_detail, name='client_detail'),
     path('tenders/<str:identifier>/', views.tender_detail, name='tender_detail_html'),
 ]
 

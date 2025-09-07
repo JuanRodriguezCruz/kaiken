@@ -1,0 +1,11 @@
+<header class="navbar" style="margin-bottom:12px">
+  <nav class="container" style="display:flex;justify-content:space-between;align-items:center">
+    <div class="nav-links">
+      <a href="{% url 'tender_list_html' %}" class="nav-link{% if request.path|slice:"0:8" == '/tenders' %} active{% endif %}">Licitaciones</a>
+      <a href="{% url 'client_list' %}" class="nav-link{% if request.path|slice:"0:8" == '/clients' %} active{% endif %}">Clientes</a>
+    </div>
+    <div class="muted">Kaiken</div>
+  </nav>
+</header>
+
+

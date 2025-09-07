@@ -38,6 +38,13 @@ h1{ font-size:1.6rem; margin-bottom:0.25rem; color:#0b1220 }
 .btn.link{ background:transparent; border:none; padding:0.15rem 0.4rem; color:var(--muted); min-height:0 }
 .btn.link svg{ opacity:0.9 }
 
+/* Navbar styles */
+.navbar { padding:6px 0; }
+.nav-links { display:flex; gap:12px; align-items:center }
+.nav-link { color:var(--muted); padding:6px 10px; border-radius:6px; text-decoration:none; display:inline-flex; align-items:center; gap:8px }
+.nav-link:hover { background: rgba(43,108,176,0.06); color:var(--accent) }
+.nav-link.active { background: rgba(11,18,32,0.06); color: #081324; font-weight:700 }
+
 table.datatable{ width:100%; border-collapse:collapse; margin-top:1rem; border-radius:6px; overflow:hidden }
 table.datatable th, table.datatable td{ padding:0.75rem 1rem; border-bottom:1px solid var(--border); text-align:left }
 table.datatable thead th{ background:linear-gradient(180deg,#fbfdff,#f6fbff); font-weight:700; color:#0b1220 }

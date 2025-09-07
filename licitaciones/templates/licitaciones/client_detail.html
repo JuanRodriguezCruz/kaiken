@@ -1,0 +1,54 @@
+{% load static %}
+{% load humanize %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cliente {{ client.name }}</title>
+    <link rel="stylesheet" href="{% static 'licitaciones/styles.css' %}">
+  </head>
+  <body>
+    {% include 'licitaciones/navbar.html' %}
+    <main class="container">
+      <div class="card">
+        <p><a class="btn link" href="{% url 'client_list' %}" title="Volver a clientes">
+          <!-- left arrow -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span style="font-size:0.95rem;margin-left:6px">Volver a clientes</span>
+        </a></p>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <h1>Cliente {{ client.name }}</h1>
+            <p class="muted">Creado: {{ client.created_at|date:"d M Y" }}</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <a class="btn" href="{% url 'client_create' %}">Crear cliente</a>
+          </div>
+        </div>
+
+        <h2>Licitaciones del cliente</h2>
+        <table class="datatable">
+          <thead>
+            <tr><th>Identificador</th><th>Fecha adjudicación</th><th>Margen</th></tr>
+          </thead>
+          <tbody>
+            {% for t in tenders %}
+            <tr>
+              <td><a href="{% url 'tender_detail_html' t.identifier %}">{{ t.identifier }}</a></td>
+              <td>{{ t.awarded_date|date:"d M Y" }}</td>
+              <td>${{ t.total_margin|floatformat:2|intcomma }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No hay licitaciones.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>
+
+

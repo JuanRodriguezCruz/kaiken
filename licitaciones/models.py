@@ -15,12 +15,14 @@ class Tender(models.Model):
     # Identificador normalizado (sin guiones) para búsquedas robustas desde
     # sistemas externos que pueden enviar el id sin guiones.
     normalized_identifier = models.CharField(max_length=128, blank=True, db_index=True)
-    client = models.CharField(max_length=256)
+    # Relación con tabla de clientes.
+    client_obj = models.ForeignKey('Client', null=True, blank=True, on_delete=models.SET_NULL, related_name='tenders')
     awarded_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:  # pragma: no cover - trivial
-        return f"{self.identifier} - {self.client}"
+        client_name = self.client_obj.name if self.client_obj else ''
+        return f"{self.identifier} - {client_name}"
 
     def total_margin(self) -> Decimal:
         """Calcula el margen total de la licitación: sum((price-cost)*qty).
@@ -64,15 +66,16 @@ class Product(models.Model):
     def __str__(self) -> str:  # pragma: no cover - trivial
         return f"{self.name} ({self.sku})"
 
-    def clean(self):
-        # Validar que el precio de venta sea mayor que el costo
-        if self.price is not None and self.cost is not None and self.price <= self.cost:
-            raise ValidationError({'price': 'El precio de venta debe ser mayor que el costo.'})
 
-    def save(self, *args, **kwargs):
-        # Ejecutar validaciones antes de guardar
-        self.full_clean()
-        super().save(*args, **kwargs)
+class Client(models.Model):
+    """Cliente que contrata las licitaciones."""
+
+    name = models.CharField(max_length=256, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:  # pragma: no cover - trivial
+        return self.name
+
 
 
 class Order(models.Model):

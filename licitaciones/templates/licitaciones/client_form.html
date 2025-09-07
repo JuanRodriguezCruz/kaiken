@@ -1,0 +1,42 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if form.instance.pk %}Editar cliente{% else %}Crear cliente{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'licitaciones/styles.css' %}">
+  </head>
+  <body>
+    {% include 'licitaciones/navbar.html' %}
+    <main class="container">
+      <div class="card">
+        <p><a class="btn link" href="{% url 'client_list' %}" title="Volver a clientes">
+            <!-- left arrow -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span style="font-size:0.95rem;margin-left:6px">Volver a clientes</span>
+          </a></p>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h1 style="margin:0">{% if form.instance.pk %}Editar cliente{% else %}Crear cliente{% endif %}</h1>
+          
+        </div>
+
+        <form method="post" style="margin-top:12px">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <div style="max-width:560px">
+            {{ form.as_p }}
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button type="submit" class="btn">Guardar</button>
+            <a class="btn secondary" href="{% url 'client_list' %}">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>
+
+
