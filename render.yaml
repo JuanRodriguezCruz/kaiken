@@ -3,10 +3,11 @@ services:
     name: kaiken-web
     env: python
     plan: free
-    repo: '{REPO}'
+    repo: 'https://github.com/JuanRodriguezCruz/kaiken'
     branch: main
     buildCommand: 'pip install -r requirements.txt && python manage.py collectstatic --noinput'
     startCommand: 'gunicorn kaiken.wsgi --bind 0.0.0.0:$PORT'
+    postDeployCommand: 'python manage.py migrate --noinput && python manage.py import_sample_data'
     envVars:
       - key: SECRET_KEY
         fromDatabase: null
