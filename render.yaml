@@ -10,6 +10,8 @@ services:
     envVars: 
       - key: DEBUG   
         value: 'True'
+      - key: DATABASE_URL
+        value: 'postgresql://kaiken_db_j5vd_user:VCSKitdIhQyOAHssLS3SgIUErLaYK65C@dpg-d2uesi7fte5s73b3ha7g-a/kaiken_db_j5vd'
 
 databases:
   - name: kaiken-db

@@ -37,7 +37,7 @@ SECRET_KEY = 'django-insecure-@7es5h2+@5x((e7nz%0j#%67q(&qum@tk$pg4sbm9##z5ip3p#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1','kaiken-nns3.onrender.com']
+ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1','kaiken-web.onrender.com']
 
 
 # Application definition
@@ -137,7 +137,15 @@ try:
     import dj_database_url
     DATABASE_URL = os.environ.get('DATABASE_URL')
     if DATABASE_URL:
-        DATABASES = {'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
+        # Parse DATABASE_URL provided by Render (Postgres). Force SSL and keep
+        # persistent connections with conn_max_age for production.
+        DATABASES = {
+            'default': dj_database_url.parse(
+                DATABASE_URL,
+                conn_max_age=600,
+                ssl_require=True,
+            )
+        }
 except Exception:
     pass
 
